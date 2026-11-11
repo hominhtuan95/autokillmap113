@@ -1,0 +1,23 @@
+name: Build Autoskill Hominhtuan95 EXE
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install requirements
+        run: python -m pip install pyinstaller cryptography
+      - name: Check public key configured
+        shell: pwsh
+        run: |
+          if (Select-String -Path Autoskill_Hominhtuan95.py -Pattern 'REPLACE_WITH_PUBLIC_KEY') { throw 'Run setup_license.py locally and upload the configured Python file first.' }
+      - name: Build EXE
+        run: python -m PyInstaller --onefile --windowed --name Autoskill_Hominhtuan95 Autoskill_Hominhtuan95.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Autoskill_Hominhtuan95_EXE
+          path: dist/Autoskill_Hominhtuan95.exe
